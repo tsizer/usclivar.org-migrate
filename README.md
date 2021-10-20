@@ -1,4 +1,12 @@
-This module migrated content from a Drupal 7 site to a new Drupal 8 site.  The settings.php file was modified on the Drupal 8 site so that the DB connected to for migration was the Drupal 7 site.
+This module migrated content from a Drupal 7 site to a new
+ Drupal 8 site.  The settings.php file was modified on the
+  Drupal 8 site so that the DB connected to for migration was
+   the Drupal 7 site.
+   
+   The D7node.php file should be placed into: 
+   migrate_usclivar/src/Plugin/migrate/source directory
+   This code in this file allows the path for each node to be
+   imported during the migration.
 
 Add to bottom of /sites/default/settings.php  file
 
