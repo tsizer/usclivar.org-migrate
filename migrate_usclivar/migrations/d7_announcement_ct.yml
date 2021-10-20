@@ -1,0 +1,92 @@
+langcode: en
+status: true
+id: usclivar_d7_announcement
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Announcements
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: announcement
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  'field_announce_front_summary':
+    plugin: iterator
+    source: 'field_front_page_summary'
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+    
+  field_announce_date:
+    plugin: sub_process
+    source: field_announcement_date
+    process:  
+      value:
+        plugin: format_date
+        source: value
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+      end_value:
+        plugin: format_date
+        source: value2
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+  field_announce_year:
+    plugin: sub_process
+    source: field_announce_year
+    process:
+      value:
+        plugin: format_date
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+        source: value
+  field_announce_thumbnail:
+    plugin: sub_process
+    source: field_announcement_image
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+      alt: alt
+      title: title
+      height: height
+      width: width
+  
+  field_announce_read_more:
+    plugin: field_link
+    source: field_announce_read_more
+    
+  type:
+    plugin: default_value
+    default_value: announcement
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

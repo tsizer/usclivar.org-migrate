@@ -1,0 +1,118 @@
+langcode: en
+status: true
+id: d7_abstractlisting
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Abstract Listing Oral
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: abstract_listing
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  field_abstr_first_name:
+    plugin: iterator
+    source: field_abstract_first_name
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text     
+  field_abstr_last_name:
+    plugin: iterator
+    source: field_abstract_last_name_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+        
+  field_abstr_file:
+    plugin: sub_process
+    source: field_abstract_upload_
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  
+  field_abstract_day:
+    plugin: sub_process
+    source: field_abstract_day
+    process:
+      value:
+        plugin: format_date
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+        source: value
+
+  field_time:
+    plugin: sub_process
+    source: field_abstr_time
+    process:  
+      value:
+        plugin: format_date
+        source: value
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d\TH:i:s'
+
+
+  field_meeting_tag:
+    plugin: migration_lookup
+    migration: d7_meeting_tags
+    source: field_meeting_tag_abstract
+
+  field_abstract_meeting_name:
+    plugin: iterator
+    source: field_meeting_name_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text 
+               
+  field_sort_order: 
+    plugin: default_value
+    default_value: 1
+   
+  field_abstr_presentation:
+    plugin: sub_process
+    source: field_presentation_upload_
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  
+  field_large_file_presentation:
+    plugin: iterator
+    source: field_large_file_presentation
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text 
+
+  type:
+    plugin: default_value
+    default_value: abstract_listing
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

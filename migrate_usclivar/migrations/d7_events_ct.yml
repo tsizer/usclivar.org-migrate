@@ -1,0 +1,82 @@
+langcode: en
+status: true
+id: d7_event
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Events
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: event
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+  field_deadlines:
+    plugin: iterator
+    source: field_deadlines
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  field_event_location:
+    plugin: iterator
+    source: field_event_location
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  field_website:
+    plugin: iterator
+    source: field_website
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  field_date_event:
+    plugin: sub_process
+    source: field_date
+    process:  
+      value:
+        plugin: format_date
+        source: value
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+      end_value:
+        plugin: format_date
+        source: value2
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+  type:
+    plugin: default_value
+    default_value: event
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

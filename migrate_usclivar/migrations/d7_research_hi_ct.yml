@@ -1,0 +1,120 @@
+langcode: en
+status: true
+id: d7_research
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Research Highlights
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+    - d7_research_tags
+source:
+  plugin: usclivar_d7_node
+  node_type: research_highlights
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+  field_research_affiliation:
+    plugin: iterator
+    source: field_research_affiliation
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  field_research_authors:
+    plugin: iterator
+    source: field_authors
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  'field_research_source':
+    plugin: iterator
+    source: 'field_source_'
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  field_research_written_by:
+    plugin: iterator
+    source: field_written_by_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  field_research_journal_title:
+    plugin: iterator
+    source: field_journal_title
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  field_research_upload_file:
+    plugin: sub_process
+    source: field_res_file
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  field_research_date:
+    plugin: sub_process
+    source: field_date
+    process:
+      value:
+        plugin: format_date
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+        source: value
+  field_research_tags:
+    plugin: migration_lookup
+    migration: d7_research_tags
+    source: field_research_tags
+    
+  field_research_thumbnail:
+    plugin: sub_process
+    source: field_research_thumbnail
+    process:
+      target_id:
+       plugin: migration_lookup
+       migration: usclivar_d7_files
+       source: fid
+      alt: alt
+      title: title
+      height: height
+      width: width
+
+  type:
+    plugin: default_value
+    default_value: research_highlights
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

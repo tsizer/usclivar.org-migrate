@@ -1,0 +1,91 @@
+langcode: en
+status: true
+id: d7_poster_abstract_page
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Poster Abstract Page
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: poster_abstr
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+   
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+   
+  field_first_author_last_name:
+    plugin: iterator
+    source: field_author_last_name_abstr
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_author_names_affiliations:
+    plugin: iterator
+    source: field_author_names_affil
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+  
+  field_poster_pdf:
+    plugin: sub_process
+    source: field_poster_pdf_abstr
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+
+  field_meeting_tag:
+    plugin: migration_lookup
+    migration: d7_meeting_tags
+    source: field_meeting_tag_poster_abstr
+  
+  field_poster_img:
+    plugin: sub_process
+    source: field_poster_image_abstr
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+      height: height
+      width: width
+      
+
+  type:
+    plugin: default_value
+    default_value: poster_abstr_page
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

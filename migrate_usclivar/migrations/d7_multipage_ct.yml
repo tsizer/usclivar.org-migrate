@@ -1,0 +1,146 @@
+langcode: en
+status: true
+id: d7_multipage
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Meeting Multi Page
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: meeting_multi_page
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  field_banner_reusable_image:
+    plugin: iterator
+    source: field_banner_reusable_image
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  field_url_and_title:
+    plugin: field_link
+    source: field_url_and_name
+  field_meeting_sub_title:
+    plugin: iterator
+    source: field_meeting_sub_title
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_street_address_or_venue:
+    plugin: iterator
+    source: field_street_or_venue
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+        
+  field_multi_meeting_location:
+    plugin: iterator
+    source: field_meeting_location
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text     
+  field_hide_location: field_hide_location_
+  
+  field_meeting_date_range:
+    plugin: sub_process
+    source: field_meeting_dates
+    process:  
+      value:
+        plugin: format_date
+        source: value
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+      end_value:
+        plugin: format_date
+        source: value2
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+  field_meeting_date_text_field:
+    plugin: iterator
+    source: field_meeting_date_text_field
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+        
+  field_meeting_menu_block:
+    plugin: iterator
+    source: field_meeting_menu_block
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+        
+  field_information_block:
+    plugin: iterator
+    source: field_information_block
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+        
+  field_meeting_home_page_: 
+    plugin: default_value
+    default_value: 0
+  
+  field_type_of_meeting: 
+    plugin: static_map
+    source: field_type_of_meeting
+    map:
+      Summit: summit
+      AMOC: amoc
+      Workshop: workshop
+  
+  field_file:
+    plugin: sub_process
+    source: field_file
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+
+  type:
+    plugin: default_value
+    default_value: meeting_multi_page
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

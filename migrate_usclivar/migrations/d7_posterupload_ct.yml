@@ -1,0 +1,100 @@
+langcode: en
+status: true
+id: d7_posterupload
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Poster Upload
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: poster_upload
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  field_poster_first_name:
+    plugin: iterator
+    source: field_poster_first_name_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text     
+  field_poster_last_name:
+    plugin: iterator
+    source: field_poster_last_name_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_poster_affiliation:
+    plugin: iterator
+    source: field_poster_affiliation
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_poster_pdf:
+    plugin: sub_process
+    source: field_upload_poster_
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+
+  field_meeting_tag:
+    plugin: migration_lookup
+    migration: d7_meeting_tags
+    source: field_meeting_tag_abstract
+   
+  field_abstr_poster:
+    plugin: sub_process
+    source: field_presentation_upload_
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  
+  field_poster_img:
+    plugin: sub_process
+    source: field_upload_poster_image
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+      height: height
+      width: width
+      
+  field_amoc_2018_session: field_amoc_2018_session
+  
+  
+  field_ocean_carbon_2017_session: field_ocean_carbon_2017_session
+
+  type:
+    plugin: default_value
+    default_value: poster_upload
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

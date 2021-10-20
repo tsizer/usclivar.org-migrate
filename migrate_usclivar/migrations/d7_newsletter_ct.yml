@@ -1,0 +1,100 @@
+langcode: en
+status: true
+id: d7_newsletter
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Newsletter
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: newsletter
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+   
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      summary: summary
+      format:
+        plugin: default_value
+        default_value: basic_html
+   
+  field_quarter:
+    plugin: iterator
+    source: field_quarter
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_volume: field_volume
+  field_year: field_year
+  field_number: field_number
+  
+   
+  field_newsletter_pdf_url:
+    plugin: iterator
+    source: field_newsletter_pdf_url
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_file_newsletter:
+    plugin: sub_process
+    source: field_file
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  
+  field_cover_image:
+    plugin: sub_process
+    source: field_cover_image
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+      height: height
+      width: width
+      
+  field_cover_thumbnail:
+    plugin: sub_process
+    source: field_cover_thumbnail
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+      height: height
+      width: width
+
+  type:
+    plugin: default_value
+    default_value: newsletter
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

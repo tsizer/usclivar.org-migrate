@@ -1,0 +1,129 @@
+langcode: en
+status: true
+id: d7_abstractlistingposter
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Abstract Listing Poster
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: abstract_poster
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  field_abstr_poster_first_name:
+    plugin: iterator
+    source: field_abstract_first_name
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text     
+  field_abstr_poster_last_name:
+    plugin: iterator
+    source: field_abstract_last_name_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_abstr_poster_affiliation:
+    plugin: iterator
+    source: field_poster_affiliation_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text
+  
+  field_abstr_poster_file:
+    plugin: sub_process
+    source: field_abstract_upload_
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  
+  field_abstract_day:
+    plugin: sub_process
+    source: field_abstract_day
+    process:
+      value:
+        plugin: format_date
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d'
+        source: value
+
+  field_time:
+    plugin: sub_process
+    source: field_abstr_time
+    process:  
+      value:
+        plugin: format_date
+        source: value
+        from_format: 'Y-m-d H:i:s'
+        to_format: 'Y-m-d\TH:i:s'
+
+
+  field_meeting_tag:
+    plugin: migration_lookup
+    migration: d7_meeting_tags
+    source: field_meeting_tag_abstract
+
+  field_abstract_meeting_name:
+    plugin: iterator
+    source: field_meeting_name_
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: plain_text 
+               
+  field_session_number: field_session_number
+   
+  field_abstr_poster:
+    plugin: sub_process
+    source: field_presentation_upload_
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+  
+  field_abstr_poster_image:
+    plugin: sub_process
+    source: field_abs_list_poster_img
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+      alt: alt
+      title: title
+      height: height
+      width: width
+
+  type:
+    plugin: default_value
+    default_value: abstract_listing_poster
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node

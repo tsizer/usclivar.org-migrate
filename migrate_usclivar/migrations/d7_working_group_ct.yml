@@ -1,0 +1,61 @@
+langcode: en
+status: true
+id: d7_working_group
+dependencies:
+  enforced:
+    module:
+      - migrate_usclivar
+migration_group: usclivar
+class: 
+  plugin: default_value
+  default_value: null
+label: Working Group Page
+migration_dependencies:
+  required:
+    - usclivar_d7_files
+source:
+  plugin: usclivar_d7_node
+  node_type: working_group_page
+process:
+  title: title
+  uid:
+    plugin: default_value
+    default_value: 1
+  status: status
+  created: created
+  changed: changed
+  body:
+    plugin: iterator
+    source: body
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+  'field_introduction_wg':
+    plugin: iterator
+    source: 'field_introduction'
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: basic_html
+    
+  field_file_upload:
+    plugin: sub_process
+    source: field_res_file
+    process:
+      target_id:
+        plugin: migration_lookup
+        migration: usclivar_d7_files
+        source: fid
+    
+  type:
+    plugin: default_value
+    default_value: working_group_page
+  'path/pathauto': 
+    plugin: default_value
+    default_value: 0 # Disable pathauto.
+  'path/alias': alias
+destination:
+  plugin: entity:node
