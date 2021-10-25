@@ -7,6 +7,11 @@ This module migrated content from a Drupal 7 site to a new
    migrate_usclivar/src/Plugin/migrate/source directory
    This code in this file allows the path for each node to be
    imported during the migration.
+   
+   Migration command: 
+   terminus drush migrate-import d7_files 
+   (Files migration should be run before any content types are migrated.)
+   
 
 Add to bottom of /sites/default/settings.php  file
 
