@@ -13,7 +13,7 @@ This module migrated content from a Drupal 7 site to a new
    (Files migration should be run before any content types are migrated.)
    
 
-Add to bottom of /sites/default/settings.php  file
+Add to bottom of /sites/default/settings.php  file to connect to the D7 DB during migrate
 
 The following should work for USClivar-d7 on Pantheon -- the pw and host have been "x"ed out
 <pre>
